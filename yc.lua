@@ -1,5 +1,4 @@
 return {
-    "badplayer1",
-    "daweiqingyi",
-    "某"
+    badplayer1 = true,
+    ["daweiqingyi"] = true,
 }
