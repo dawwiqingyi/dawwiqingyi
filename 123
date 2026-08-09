@@ -1,3 +1,12 @@
+-- ======= BYPASS INJECTION START =======
+-- 密钥绕过：在UI加载前直接设置密钥变量，跳过验证
+getgenv().SCRIPT_KEY = "SNOWY-FREE-BYPASS"
+getgenv().KEY_TIER = "free"
+getgenv().JD_IS_PREMIUM = false
+getgenv().UI_CLOSED = true
+-- 如果想显示UI但自动通过验证，注释掉上面一行 UI_CLOSED = true
+-- ======= BYPASS INJECTION END =======
+
 --[[
 DumpTime: 14:49:49
 DumpType: loadstring
@@ -118,8 +127,11 @@ getgenv().Junkie = Junkie
 local JNKIE_USER_ID       = "1049695"
 local SERVICE_NAME        = "snowy free hub"
 local SERVICE_ID          = "19097"
-getgenv().KEY_TIER     = nil
-getgenv().JD_IS_PREMIUM = nil
+-- 如果BYPASS已经设置了密钥变量，则保留原值不重置
+if not getgenv().SCRIPT_KEY then
+    getgenv().KEY_TIER     = nil
+    getgenv().JD_IS_PREMIUM = nil
+end
 local function configureService()
     pcall(function()
         local tier = tostring(getgenv().KEY_TIER or ""):lower()
@@ -207,6 +219,15 @@ end
 if getgenv().__SnowyHubKeyUI then
     pcall(function() getgenv().__SnowyHubKeyUI:Destroy() end)
     getgenv().__SnowyHubKeyUI = nil
+end
+-- ══════════════════════════════════════════════════════════════
+-- BYPASS: 如果已设置UI_CLOSED=true，则跳过所有UI创建直接进入主脚本
+-- ══════════════════════════════════════════════════════════════
+if getgenv().UI_CLOSED and getgenv().SCRIPT_KEY then
+    warn("[SnowyHub-Bypass] Skipping Key UI, proceeding directly to hub...")
+    configureService()
+    getgenv().UI_CLOSING = true
+    return
 end
 -- ══════════════════════════════════════════════════════════════
 -- SCREEN GUI
@@ -2506,15 +2527,6 @@ redeemBtn.MouseButton1Click:Connect(function()
         isValidating = false
     end)
 end)
-getgenv().SCRIPT_KEY = "SNOWY-FREE-BYPASS"
-getgenv().KEY_TIER = "free"
-getgenv().JD_IS_PREMIUM = false
-getgenv().UI_CLOSED = true  
-while not getgenv().SCRIPT_KEY and not getgenv().UI_CLOSED do
-    task.wait(0.1)
-end
-
-
 
 -- This file was protected using Luraph Obfuscator v14.7 [https://lura.ph/]
 
